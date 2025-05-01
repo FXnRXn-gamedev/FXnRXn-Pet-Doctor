@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -10,6 +11,8 @@ namespace FXnRXn.PetDoctor
 		public static Joystick instance { get; private set; }
 
 		#region Variables
+
+		public InputType							mobileInputType;
 		
 		[Header("Joystick :")] 
 		[SerializeField] protected Image			backgroundImage;
@@ -57,6 +60,20 @@ namespace FXnRXn.PetDoctor
 		
 		//--------------------------------------------------------------------------------------------------------------
 
+		private void Awake()
+		{
+			Control.Initialise(GetMobileInputType());
+			if (Control.InputType == GetMobileInputType())
+			{
+				Control.SetControl(this);
+			}
+			else
+			{
+				gameObject.SetActive(false);
+			}
+			
+		}
+
 		public void Initialise(Canvas canvas)
 		{
 			this.canvas = canvas;
@@ -88,6 +105,7 @@ namespace FXnRXn.PetDoctor
 		public void OnPointerDown(PointerEventData eventData)
 		{
 			canDrag = !WorldSpaceRaycaster.Raycast(eventData);
+
 			if (!canDrag) return;
 			if (!isTutorialDisplayed)
 			{
@@ -168,8 +186,8 @@ namespace FXnRXn.PetDoctor
 
 			ResetControl();
 		}
-		
-		
+
+		public InputType GetMobileInputType() => mobileInputType;
 	}
 }
 

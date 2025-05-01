@@ -34,11 +34,12 @@ namespace FXnRXn.PetDoctor
 		
 		
 		private Animator										playerAnimator;
+		private PlayerGraphics									playerGraphics;
 		// Movement
 		private bool											isRunning;
 		private float											speed								= 0;
-		private float											maxSpeed;
-		private float											acceleration;
+		private float											maxSpeed							= 3.5f;
+		private float											acceleration						= 8f;
 		
 		// UI Components
 		private IControlBehavior								control;
@@ -46,7 +47,7 @@ namespace FXnRXn.PetDoctor
 
 		#endregion
 
-		private void Awake()
+		private void Start()
 		{
 			Initialise();
 		}
@@ -54,6 +55,7 @@ namespace FXnRXn.PetDoctor
 		public void Initialise()
 		{
 			playerBehavior = this;
+			playerGraphics = PlayerGraphics.instance;
 			
 			// Link control
 			control = Control.CurrentControl;
@@ -69,13 +71,51 @@ namespace FXnRXn.PetDoctor
 
 		private void MovementHandler()
 		{
-			if (control.IsInputActive && control.FormatInput.sqrMagnitude > 0.1f)
+			if (control != null && control.IsInputActive && control.FormatInput.sqrMagnitude > 0.1f)
 			{
-				Debug.Log("Enable Input");
+				// --- Enable Input
+				if (!isRunning)
+				{
+					isRunning = true;
+					playerGraphics.GetPlayerAnimator().SetBool(RUN_HASH, true);
+					speed = 0;
+				}
+
+				float maxAllowedSpeed = control.FormatInput.magnitude * maxSpeed;
+				
+				if (speed > maxAllowedSpeed)
+				{
+					speed -= acceleration * Time.deltaTime;
+					if (speed < maxAllowedSpeed)
+					{
+						speed = maxAllowedSpeed;
+					}
+				}
+				else
+				{
+					
+					speed += acceleration * Time.deltaTime;
+					if (speed > maxAllowedSpeed)
+					{
+						speed = maxAllowedSpeed;
+					}
+				}
+				
+				transform.position += control.FormatInput * Time.deltaTime * speed;
+				playerGraphics.GetPlayerAnimator().SetFloat(MOVEMENT_MULTIPLIER_HASH, speed / maxSpeed);
+				transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(control.FormatInput.normalized), 0.2f); 
+
+
 			}
 			else
 			{
-				Debug.Log("Disable Input");
+				// Disable Input
+				if (isRunning)
+				{
+					isRunning = false;
+
+					playerGraphics.GetPlayerAnimator().SetBool(RUN_HASH, false);
+				}
 			}
 		}
 	}

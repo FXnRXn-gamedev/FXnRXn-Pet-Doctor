@@ -166,6 +166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bf467cde88f2ad4c8967dd907f067ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mobileInputType: 1
   backgroundImage: {fileID: 2486706760321072009}
   handleImage: {fileID: 5170170668202773703}
   backgroundActiveColor: {r: 1, g: 1, b: 1, a: 1}
