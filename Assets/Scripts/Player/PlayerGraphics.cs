@@ -18,23 +18,25 @@ namespace FXnRXn.PetDoctor
 		
 		
 		
-		
+		private PlayerAnimationHandler						playerAnimationHandler;
 		private Animator									animator;
 		
 		
 
 		#endregion
 
-		private void Start()
-		{
-			Init();
-		}
-
-		private void Init()
+		private void Awake()
 		{
 			instance = this;
-			if (animator == null) animator = GetComponent<Animator>();
+			
+		}
 
+		public void Init(PlayerBehavior _playerBehavior)
+		{
+			if (animator == null) animator = GetComponent<Animator>();
+			if (playerAnimationHandler == null) playerAnimationHandler = GetComponent<PlayerAnimationHandler>();
+			playerAnimationHandler.Init(_playerBehavior);
+			
 		}
 		
 		
